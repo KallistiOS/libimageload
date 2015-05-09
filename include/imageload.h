@@ -2,9 +2,6 @@
 #define __IMAGELOAD_H__
 
 #include <kos.h>
-#include <imageload/jitterdefs.h>
-
-#include <stdio.h>
 
 typedef enum
 {

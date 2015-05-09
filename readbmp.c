@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <imageload/imageload.h>
-
 #pragma pack(1)
 
 #define BI_RGB 0
@@ -12,37 +10,37 @@
 #define BI_RLE4 2
 #define BI_BITFIELDS 3
 
-typedef struct { 
-  uint16    bfType; 
-  uint32   bfSize; 
-  uint16    bfReserved1; 
-  uint16    bfReserved2; 
-  uint32   bfOffBits; 
-} BITMAPFILEHEADER; 
+typedef struct {
+  uint16    bfType;
+  uint32   bfSize;
+  uint16    bfReserved1;
+  uint16    bfReserved2;
+  uint32   bfOffBits;
+} BITMAPFILEHEADER;
 
-typedef struct { 
-  uint32 bcSize; 
-  uint16 bcWidth; 
-  uint16 bcHeight; 
-  uint16 bcPlanes; 
-  uint16 bcBitCount; 
+typedef struct {
+  uint32 bcSize;
+  uint16 bcWidth;
+  uint16 bcHeight;
+  uint16 bcPlanes;
+  uint16 bcBitCount;
 } BITMAPCOREHEADER;
 
 typedef struct tagBITMAPINFOHEADER {
-    uint32  biSize;          
-    int32  biWidth;         
-    int32  biHeight;        
-    uint16   biPlanes;        
-    uint16   biBitCount;      
-    uint32  biCompression;   
-    uint32  biSizeImage;     
-    int32  biXPelsPerMeter; 
-    int32  biYPelsPerMeter; 
-    uint32  biClrUsed;       
-    uint32  biClrImportant;  
+    uint32  biSize;
+    int32  biWidth;
+    int32  biHeight;
+    uint16   biPlanes;
+    uint16   biBitCount;
+    uint32  biCompression;
+    uint32  biSizeImage;
+    int32  biXPelsPerMeter;
+    int32  biYPelsPerMeter;
+    uint32  biClrUsed;
+    uint32  biClrImportant;
 } BITMAPINFOHEADER;
- 
-typedef struct 
+
+typedef struct
 {
   uint8 rgbBlue;
   uint8 rgbGreen;
@@ -73,7 +71,7 @@ uint8 *readbmp_get_image(uint32 *pChannels, uint32 *pRowbytes,
   uint32 skip, r, g, b, k;
   uint32 x, y;
   uint8 byte;
-  
+
   /* read the BITMAPFILEHEADER */
   uint32 bytesRead = fread(&bitmapFile, 1, sizeof(BITMAPFILEHEADER), bmpfile);
   if ( bytesRead != sizeof(BITMAPFILEHEADER) ||
@@ -86,7 +84,7 @@ uint8 *readbmp_get_image(uint32 *pChannels, uint32 *pRowbytes,
   bytesRead = fread(&bitmapInfo, 1, sizeof(BITMAPINFOHEADER), bmpfile);
   if ( bytesRead != sizeof(BITMAPINFOHEADER) ||
        bitmapInfo.biSize == sizeof(BITMAPCOREHEADER))
-  {	
+  {
     return NULL;
   }
 
@@ -118,11 +116,11 @@ uint8 *readbmp_get_image(uint32 *pChannels, uint32 *pRowbytes,
 
   if (bitmapFile.bfOffBits != 0)
     fseek(bmpfile,bitmapFile.bfOffBits,SEEK_SET);
-  
+
   imageBuffer = malloc(sizeof(uint8)*bitmapInfo.biSizeImage);
   buffer = imageBuffer;
   bytesRead = fread(buffer, 1, bitmapInfo.biSizeImage, bmpfile);
-  
+
   if ( bytesRead != bitmapInfo.biSizeImage*sizeof(uint8))
   {
     free(colorTable);
@@ -135,14 +133,14 @@ uint8 *readbmp_get_image(uint32 *pChannels, uint32 *pRowbytes,
   *pWidth = bitmapInfo.biWidth;
   *pHeight = bitmapInfo.biHeight;
   ourbuffer = (uint8*)malloc(*pRowbytes**pHeight);
-  
-  if (bitmapInfo.biCompression == BI_BITFIELDS) 
+
+  if (bitmapInfo.biCompression == BI_BITFIELDS)
   {
     int bit;
     rmask = ((unsigned int *)colorTable)[0];
     gmask = ((unsigned int *)colorTable)[1];
     bmask = ((unsigned int *)colorTable)[2];
-    for (bit = bitmapInfo.biBitCount - 1; bit >= 0; bit--) 
+    for (bit = bitmapInfo.biBitCount - 1; bit >= 0; bit--)
     {
       if (bmask & (1 << bit))
         bshift = bit;
@@ -150,9 +148,9 @@ uint8 *readbmp_get_image(uint32 *pChannels, uint32 *pRowbytes,
         gshift = bit;
       if (rmask & (1 << bit))
         rshift = bit;
-    }  
+    }
   }
-  else if (bitmapInfo.biBitCount == 16) 
+  else if (bitmapInfo.biBitCount == 16)
   {
     rmask = 0x7C00;
     gmask = 0x03E0;
@@ -161,7 +159,7 @@ uint8 *readbmp_get_image(uint32 *pChannels, uint32 *pRowbytes,
     gshift = 5;
     bshift = 0;
   }
-  else if (bitmapInfo.biBitCount == 32) 
+  else if (bitmapInfo.biBitCount == 32)
   {
     rmask = 0x00FF0000;
     gmask = 0x0000FF00;
@@ -170,10 +168,10 @@ uint8 *readbmp_get_image(uint32 *pChannels, uint32 *pRowbytes,
     gshift = 8;
     bshift = 0;
   }
-	
+
   /* for now we will not handle RLE encoded data */
 
-  if (bitmapInfo.biBitCount == 4) 
+  if (bitmapInfo.biBitCount == 4)
   {
     if (bitmapInfo.biCompression == BI_RLE4)
     {
@@ -183,13 +181,13 @@ uint8 *readbmp_get_image(uint32 *pChannels, uint32 *pRowbytes,
       return NULL;
     }
     else
-    if (bitmapInfo.biCompression == BI_RGB) 
+    if (bitmapInfo.biCompression == BI_RGB)
     {
       skip = ((((bitmapInfo.biWidth + 7) / 8) * 8) - bitmapInfo.biWidth) / 2;
       byte = 0;
-      for (y = 0; y < bitmapInfo.biHeight; y++) 
+      for (y = 0; y < bitmapInfo.biHeight; y++)
       {
-        for (x = 0; x < bitmapInfo.biWidth; x++) 
+        for (x = 0; x < bitmapInfo.biWidth; x++)
         {
           if ((x & 1) == 0)
             byte = *(buffer++);
@@ -203,7 +201,7 @@ uint8 *readbmp_get_image(uint32 *pChannels, uint32 *pRowbytes,
       }
     }
   }
-  if (bitmapInfo.biBitCount == 8) 
+  if (bitmapInfo.biBitCount == 8)
   {
     if (bitmapInfo.biCompression == BI_RLE8)
     {
@@ -212,13 +210,13 @@ uint8 *readbmp_get_image(uint32 *pChannels, uint32 *pRowbytes,
       free(ourbuffer);
       return NULL;
     }
-    else 
-      if (bitmapInfo.biCompression == BI_RGB) 
+    else
+      if (bitmapInfo.biCompression == BI_RGB)
       {
         skip = (((bitmapInfo.biWidth + 3) / 4) * 4) - bitmapInfo.biWidth;
-        for (y = 0; y < bitmapInfo.biHeight; y++) 
+        for (y = 0; y < bitmapInfo.biHeight; y++)
         {
-          for (x = 0; x < bitmapInfo.biWidth; x++) 
+          for (x = 0; x < bitmapInfo.biWidth; x++)
           {
             byte = *(buffer++);
             ourbuffer[(bitmapInfo.biHeight-y-1)**pRowbytes+3*x] = colorTable[byte].rgbRed;
@@ -229,12 +227,12 @@ uint8 *readbmp_get_image(uint32 *pChannels, uint32 *pRowbytes,
         }
       }
   }
-  else if (bitmapInfo.biBitCount == 16) 
+  else if (bitmapInfo.biBitCount == 16)
   {
     skip = (((bitmapInfo.biWidth * 16 + 31) / 32) * 4) - (bitmapInfo.biWidth * 2);
-    for (y = 0; y < bitmapInfo.biHeight; y++) 
+    for (y = 0; y < bitmapInfo.biHeight; y++)
     {
-      for (x = 0; x < bitmapInfo.biWidth; x++) 
+      for (x = 0; x < bitmapInfo.biWidth; x++)
       {
         r = ((uint16)(*buffer) & rmask) >> rshift;
         g = ((uint16)(*buffer) & gmask) >> gshift;
@@ -247,12 +245,12 @@ uint8 *readbmp_get_image(uint32 *pChannels, uint32 *pRowbytes,
       buffer += skip;
     }
   }
-  else if (bitmapInfo.biBitCount == 24) 
+  else if (bitmapInfo.biBitCount == 24)
   {
     skip = (4 - ((bitmapInfo.biWidth * 3) % 4)) & 3;
-    for (y = 0; y < bitmapInfo.biHeight; y++) 
+    for (y = 0; y < bitmapInfo.biHeight; y++)
     {
-      for (x = 0; x < bitmapInfo.biWidth; x++) 
+      for (x = 0; x < bitmapInfo.biWidth; x++)
       {
         b = *(buffer++);
         g = *(buffer++);
@@ -265,12 +263,12 @@ uint8 *readbmp_get_image(uint32 *pChannels, uint32 *pRowbytes,
       buffer += skip;
     }
   }
-  else if (bitmapInfo.biBitCount == 32) 
+  else if (bitmapInfo.biBitCount == 32)
   {
     skip = (((bitmapInfo.biWidth * 32 + 31) / 32) * 4) - (bitmapInfo.biWidth * 4);
-    for (y = 0; y < bitmapInfo.biHeight; y++) 
+    for (y = 0; y < bitmapInfo.biHeight; y++)
     {
-      for (x = 0; x < bitmapInfo.biWidth; x++) 
+      for (x = 0; x < bitmapInfo.biWidth; x++)
       {
         r = ((uint32)(*buffer) & rmask) >> rshift;
         g = ((uint32)(*buffer) & gmask) >> gshift;
@@ -279,7 +277,7 @@ uint8 *readbmp_get_image(uint32 *pChannels, uint32 *pRowbytes,
         ourbuffer[(bitmapInfo.biHeight-y-1)**pRowbytes+3*x] = r;
         ourbuffer[(bitmapInfo.biHeight-y-1)**pRowbytes+3*x+1] = g;
         ourbuffer[(bitmapInfo.biHeight-y-1)**pRowbytes+3*x+2] = b;
-        
+
         buffer+=2;
       }
       buffer += skip;

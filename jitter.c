@@ -1,4 +1,4 @@
-#include <imageload/jitterdefs.h>
+#include "jitterdefs.h"
 
 #include <stdlib.h>
 
@@ -22,7 +22,7 @@ unsigned char jitter(unsigned char c, unsigned char n, unsigned char shift, unsi
 {
   const unsigned char lowbit = 1 << shift;
   unsigned int p,q;
-  
+
   if (c < 248)
   {
     p = c % lowbit;

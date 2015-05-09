@@ -1,4 +1,4 @@
-#include <imageload/imageload.h>
+#include "imageload.h"
 
 #include <string.h>
 #include <malloc.h>
@@ -31,12 +31,12 @@ img_copy_texture(uint16 *dest, uint8 *source, uint32 channels, uint32 stride,
   uint16 *destRow;
   uint8 *pRow;
   uint8 r,g,b;
-  
+
   for(i = 0; i < h; i++)
   {
     pRow = &source[i*stride];
     destRow = &dest[i*w];
-    
+
     if (channels == 3)
     {
       switch(info->alpha)
@@ -233,7 +233,7 @@ int img_load_file(const char *filename, IMG_INFO *info, kos_img_t *img)
     info->type = img_guess(filename);
 
   img_load_data(f,info,img);
-      
+
   fclose(f);
 
   return 0;
@@ -244,7 +244,7 @@ int img_load_data(FILE *f, IMG_INFO *info, kos_img_t *img)
   uint32 channels, rowBytes;
   uint8 *data = NULL;
   uint8 allocate = 0;
-  
+
   if (info == NULL)
   {
     allocate = 1;
@@ -252,7 +252,7 @@ int img_load_data(FILE *f, IMG_INFO *info, kos_img_t *img)
     memset(&info,0,sizeof(IMG_INFO));
   }
 
-  
+
   switch(info->type)
   {
     case IMG_FILE_GUESS:
@@ -321,6 +321,6 @@ int img_load_data(FILE *f, IMG_INFO *info, kos_img_t *img)
     img->fmt = KOS_IMG_FMT(KOS_IMG_FMT_ARGB4444, 0);
     break;
   }
-  
+
   return 0;
 }
