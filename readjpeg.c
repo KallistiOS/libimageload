@@ -6,7 +6,7 @@
 static struct jpeg_decompress_struct cinfo;
 static struct jpeg_error_mgr jerr;
 
-uint32 readjpeg_init(FILE *infile)
+uint32_t readjpeg_init(FILE *infile)
 {
     /* Step 1: allocate and initialize JPEG decompression object */
 
@@ -33,10 +33,10 @@ uint32 readjpeg_init(FILE *infile)
 
 /* load n x n textures from jpegs */
 
-uint8 *readjpeg_get_image(uint32 *pChannels, uint32 *pRowbytes, uint32 *pWidth, uint32 *pHeight)
+uint8_t *readjpeg_get_image(uint32_t *pChannels, uint32_t *pRowbytes, uint32_t *pWidth, uint32_t *pHeight)
 {
-  uint32 i;
-  uint8 *ourbuffer;
+  uint32_t i;
+  uint8_t *ourbuffer;
   JSAMPARRAY buffer;
 
   *pRowbytes = cinfo.output_width * cinfo.output_components;
@@ -44,7 +44,7 @@ uint8 *readjpeg_get_image(uint32 *pChannels, uint32 *pRowbytes, uint32 *pWidth, 
   *pWidth = cinfo.output_width;
   *pHeight = cinfo.output_height;
 
-  ourbuffer = (uint8 *)malloc(*pRowbytes**pHeight);
+  ourbuffer = (uint8_t *)malloc(*pRowbytes**pHeight);
 
   buffer = (*cinfo.mem->alloc_sarray)((j_common_ptr) &cinfo, JPOOL_IMAGE, *pRowbytes, 1);
 

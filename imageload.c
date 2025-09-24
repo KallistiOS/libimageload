@@ -24,13 +24,13 @@ IMG_FILE img_guess(const char *filename)
 }
 
 void
-img_copy_texture(uint16 *dest, uint8 *source, uint32 channels, uint32 stride,
-                 const IMG_INFO *info, uint32 w, uint32 h)
+img_copy_texture(uint16_t *dest, uint8_t *source, uint32_t channels, uint32_t stride,
+                 const IMG_INFO *info, uint32_t w, uint32_t h)
 {
-  uint32 i,j;
-  uint16 *destRow;
-  uint8 *pRow;
-  uint8 r,g,b;
+  uint32_t i,j;
+  uint16_t *destRow;
+  uint8_t *pRow;
+  uint8_t r,g,b;
 
   for(i = 0; i < h; i++)
   {
@@ -241,9 +241,9 @@ int img_load_file(const char *filename, IMG_INFO *info, kos_img_t *img)
 
 int img_load_data(FILE *f, IMG_INFO *info, kos_img_t *img)
 {
-  uint32 channels, rowBytes;
-  uint8 *data = NULL;
-  uint8 allocate = 0;
+  uint32_t channels, rowBytes;
+  uint8_t *data = NULL;
+  uint8_t allocate = 0;
 
   if (info == NULL)
   {
@@ -294,8 +294,8 @@ int img_load_data(FILE *f, IMG_INFO *info, kos_img_t *img)
   if (info->dither_height == 0)
     info->dither_height = img->h;
 
-  img->data = (uint16 *)malloc(sizeof(uint16)*img->w*img->h);
-  img->byte_count = sizeof(uint16)*img->w*img->h;
+  img->data = (uint16_t *)malloc(sizeof(uint16_t)*img->w*img->h);
+  img->byte_count = sizeof(uint16_t)*img->w*img->h;
   img_copy_texture(img->data, data, channels, rowBytes, info,
                    img->w, img->h);
 
