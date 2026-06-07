@@ -1,7 +1,7 @@
-#include "imageload.h"
+#include "include/imageload.h"
 
+#include <stdlib.h>
 #include <string.h>
-#include <malloc.h>
 
 #define LOAD565(r, g, b) (((r>>3)<<11) | ((g>>2)<<5) | ((b>>3)))
 #define LOAD1555(r, g, b, a) (((a>>7)<<15)|((r>>3)<<10)|((g>>3)<<5)|((b>>3)))
@@ -10,7 +10,7 @@
 
 IMG_FILE img_guess(const char *filename)
 {
-  uint32 len = strlen(filename);
+  uint32_t len = strlen(filename);
   const char *end = &filename[len-3];
   if (strncasecmp(end,"jpg",3) == 0)
     return IMG_FILE_JPEG;

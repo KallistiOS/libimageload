@@ -2,10 +2,12 @@
 
    readpcx.c
 
-   PCX image loader (_heavily_ stolen from Dan Potters code)
+   PCX image loader (_heavily_ stolen from Megan Potters code)
  */
 
-#include <kos.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 typedef struct {
 	char   mfg;               /* manufacturer, always 0xa0		*/
