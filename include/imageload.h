@@ -1,7 +1,10 @@
 #ifndef __IMAGELOAD_H__
 #define __IMAGELOAD_H__
 
-#include <kos.h>
+#include <stdint.h>
+#include <stdio.h>
+
+#include <kos/img.h>
 
 typedef enum
 {
@@ -52,27 +55,27 @@ int img_load_file(const char *filename, IMG_INFO *info, kos_img_t *img);
  * create a jitter table at compile time
  */
 void jitter_init(void);
-uint8 jitter(uint8_t c, uint8_t n, uint8_t shift, uint8_t noise, uint16_t x, uint16_t y);
+uint8_t jitter(uint8_t c, uint8_t n, uint8_t shift, uint8_t noise, uint16_t x, uint16_t y);
 
 /* Format specific loaders */
 
-uint32 readbmp_init(FILE *infile);
-uint8 *readbmp_get_image(uint32_t *pChannels, uint32_t *pRowbytes,
+uint32_t readbmp_init(FILE *infile);
+uint8_t *readbmp_get_image(uint32_t *pChannels, uint32_t *pRowbytes,
                          uint32_t *pWidth, uint32_t *pHeight);
 void readbmp_cleanup(void);
 
-uint32 readpng_init(FILE *infile);
-uint8 *readpng_get_image(uint32_t *pChannels, uint32_t *pRowbytes,
+uint32_t readpng_init(FILE *infile);
+uint8_t *readpng_get_image(uint32_t *pChannels, uint32_t *pRowbytes,
                          uint32_t *pWidth, uint32_t *pHeight);
 void readpng_cleanup(void);
 
-uint32 readjpeg_init(FILE *infile);
-uint8 *readjpeg_get_image(uint32_t *pChannels, uint32_t *pRowbytes,
+uint32_t readjpeg_init(FILE *infile);
+uint8_t *readjpeg_get_image(uint32_t *pChannels, uint32_t *pRowbytes,
                          uint32_t *pWidth, uint32_t *pHeight);
 void readjpeg_cleanup(void);
 
-uint32 readpcx_init(FILE *infile);
-uint8 *readpcx_get_image(uint32_t *pChannels, uint32_t *pRowbytes,
+uint32_t readpcx_init(FILE *infile);
+uint8_t *readpcx_get_image(uint32_t *pChannels, uint32_t *pRowbytes,
 			 uint32_t *pWidth, uint32_t *pHeight);
 void readpcx_cleanup(void);
 #endif
