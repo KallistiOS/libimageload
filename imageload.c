@@ -244,6 +244,7 @@ int img_load_data(FILE *f, IMG_INFO *info, kos_img_t *img)
   uint32_t channels, rowBytes;
   uint8_t *data = NULL;
   uint8_t allocate = 0;
+  void *token;
 
   if (info == NULL)
   {
@@ -260,31 +261,43 @@ int img_load_data(FILE *f, IMG_INFO *info, kos_img_t *img)
       break;
     case IMG_FILE_JPEG:
     {
-      readjpeg_init(f);
-      data = readjpeg_get_image(&channels, &rowBytes, &img->w, &img->h);
-      readjpeg_cleanup();
+      token = readjpeg_init(f);
+      if(!token)
+          goto err_free_info;
+
+      data = readjpeg_get_image(token, &channels, &rowBytes, &img->w, &img->h);
+      readjpeg_cleanup(token);
       break;
     }
     case IMG_FILE_PNG:
     {
-      readpng_init(f);
-      data = readpng_get_image(&channels, &rowBytes, &img->w, &img->h);
-      readpng_cleanup();
+      token = readpng_init(f);
+      if(!token)
+          goto err_free_info;
+
+      data = readpng_get_image(token, &channels, &rowBytes, &img->w, &img->h);
+      readpng_cleanup(token);
       break;
     }
     case IMG_FILE_BMP:
     {
-      readbmp_init(f);
-      data = readbmp_get_image(&channels, &rowBytes, &img->w, &img->h);
-      readbmp_cleanup();
+      token = readbmp_init(f);
+      if(!token)
+          goto err_free_info;
+
+      data = readbmp_get_image(token, &channels, &rowBytes, &img->w, &img->h);
+      readbmp_cleanup(token);
       break;
     }
 
     case IMG_FILE_PCX:
     {
-      readpcx_init(f);
-      data = readpcx_get_image(&channels, &rowBytes, &img->w, &img->h);
-      readpcx_cleanup();
+      token = readpcx_init(f);
+      if(!token)
+          goto err_free_info;
+
+      data = readpcx_get_image(token, &channels, &rowBytes, &img->w, &img->h);
+      readpcx_cleanup(token);
       break;
     }
   }
@@ -323,4 +336,9 @@ int img_load_data(FILE *f, IMG_INFO *info, kos_img_t *img)
   }
 
   return 0;
+
+err_free_info:
+  if(allocate)
+    free(info);
+  return -1;
 }

@@ -59,23 +59,23 @@ uint8_t jitter(uint8_t c, uint8_t n, uint8_t shift, uint8_t noise, uint16_t x, u
 
 /* Format specific loaders */
 
-uint32_t readbmp_init(FILE *infile);
-uint8_t *readbmp_get_image(uint32_t *pChannels, uint32_t *pRowbytes,
-                         uint32_t *pWidth, uint32_t *pHeight);
-void readbmp_cleanup(void);
+void *readbmp_init(FILE *infile);
+uint8_t *readbmp_get_image(void *token, uint32_t *pChannels, uint32_t *pRowbytes,
+                           uint32_t *pWidth, uint32_t *pHeight);
+void readbmp_cleanup(void *token);
 
-uint32_t readpng_init(FILE *infile);
-uint8_t *readpng_get_image(uint32_t *pChannels, uint32_t *pRowbytes,
-                         uint32_t *pWidth, uint32_t *pHeight);
-void readpng_cleanup(void);
+void *readpng_init(FILE *infile);
+uint8_t *readpng_get_image(void *token, uint32_t *pChannels, uint32_t *pRowbytes,
+                           uint32_t *pWidth, uint32_t *pHeight);
+void readpng_cleanup(void *token);
 
-uint32_t readjpeg_init(FILE *infile);
-uint8_t *readjpeg_get_image(uint32_t *pChannels, uint32_t *pRowbytes,
-                         uint32_t *pWidth, uint32_t *pHeight);
-void readjpeg_cleanup(void);
+void *readjpeg_init(FILE *infile);
+uint8_t *readjpeg_get_image(void *token, uint32_t *pChannels, uint32_t *pRowbytes,
+                            uint32_t *pWidth, uint32_t *pHeight);
+void readjpeg_cleanup(void *token);
 
-uint32_t readpcx_init(FILE *infile);
-uint8_t *readpcx_get_image(uint32_t *pChannels, uint32_t *pRowbytes,
-			 uint32_t *pWidth, uint32_t *pHeight);
-void readpcx_cleanup(void);
+void *readpcx_init(FILE *infile);
+uint8_t *readpcx_get_image(void *token, uint32_t *pChannels, uint32_t *pRowbytes,
+                           uint32_t *pWidth, uint32_t *pHeight);
+void readpcx_cleanup(void *token);
 #endif

@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <imageload.h>
 
 typedef struct {
 	char   mfg;               /* manufacturer, always 0xa0		*/
@@ -28,13 +29,13 @@ typedef struct {
 
 FILE *pcxfile;
 
-uint32_t readpcx_init(FILE *infile)
+void *readpcx_init(FILE *infile)
 {
   pcxfile = infile;
-  return 0;
+  return (void *)1; /* Don't care */
 }
 
-uint8_t *readpcx_get_image(uint32_t *pChannels, uint32_t *pRowBytes,
+uint8_t *readpcx_get_image(void *token, uint32_t *pChannels, uint32_t *pRowBytes,
                            uint32_t *pWidth, uint32_t *pHeight)
 {
   pcx_hdr  header;
@@ -46,7 +47,9 @@ uint8_t *readpcx_get_image(uint32_t *pChannels, uint32_t *pRowBytes,
   uint32_t i;
   uint8_t  pixel;
   uint8_t  runlen;
-  
+
+  (void)token;
+
   bytesRead = fread(&header, sizeof(pcx_hdr), 1, pcxfile);
 
   if (header.bpp != 8)
@@ -94,8 +97,10 @@ uint8_t *readpcx_get_image(uint32_t *pChannels, uint32_t *pRowBytes,
   return image;
 }
 
-void readpcx_cleanup(void)
+void readpcx_cleanup(void *token)
 {
+  (void)token;
+
   pcxfile = NULL;
   return;
 }

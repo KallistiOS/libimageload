@@ -3,11 +3,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include <jpeg/jpeglib.h>
+#include <imageload.h>
 
 static struct jpeg_decompress_struct cinfo;
 static struct jpeg_error_mgr jerr;
 
-uint32_t readjpeg_init(FILE *infile)
+void * readjpeg_init(FILE *infile)
 {
     /* Step 1: allocate and initialize JPEG decompression object */
 
@@ -29,16 +30,18 @@ uint32_t readjpeg_init(FILE *infile)
     /* Step 5: Start decompressor */
     (void) jpeg_start_decompress(&cinfo);
 
-    return 0;
+    return &cinfo;
 }
 
 /* load n x n textures from jpegs */
 
-uint8_t *readjpeg_get_image(uint32_t *pChannels, uint32_t *pRowbytes, uint32_t *pWidth, uint32_t *pHeight)
+uint8_t *readjpeg_get_image(void *token, uint32_t *pChannels, uint32_t *pRowbytes,
+                            uint32_t *pWidth, uint32_t *pHeight)
 {
   uint32_t i;
   uint8_t *ourbuffer;
   JSAMPARRAY buffer;
+  (void)token;
 
   *pRowbytes = cinfo.output_width * cinfo.output_components;
   *pChannels = cinfo.output_components;
@@ -58,8 +61,10 @@ uint8_t *readjpeg_get_image(uint32_t *pChannels, uint32_t *pRowbytes, uint32_t *
   return ourbuffer;
 }
 
-void readjpeg_cleanup(void)
+void readjpeg_cleanup(void *token)
 {
+    (void)token;
+
     (void) jpeg_finish_decompress(&cinfo);
     jpeg_destroy_decompress(&cinfo);
 }

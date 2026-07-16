@@ -1,5 +1,5 @@
 
-
+#include <imageload.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -52,14 +52,14 @@ typedef struct
 
 FILE *bmpfile;
 
-uint32_t readbmp_init(FILE *infile)
+void *readbmp_init(FILE *infile)
 {
   bmpfile = infile;
-  return 0;
+  return (void *)1; /* Don't care */
 }
 
-uint8_t *readbmp_get_image(uint32_t *pChannels, uint32_t *pRowbytes,
-                         uint32_t *pWidth, uint32_t *pHeight)
+uint8_t *readbmp_get_image(void *token, uint32_t *pChannels, uint32_t *pRowbytes,
+                           uint32_t *pWidth, uint32_t *pHeight)
 {
   BITMAPINFOHEADER bitmapInfo;
   BITMAPFILEHEADER bitmapFile;
@@ -71,6 +71,8 @@ uint8_t *readbmp_get_image(uint32_t *pChannels, uint32_t *pRowbytes,
   uint32_t skip, r, g, b, k;
   uint32_t x, y;
   uint8_t byte;
+
+  (void)token;
 
   /* read the BITMAPFILEHEADER */
   uint32_t bytesRead = fread(&bitmapFile, 1, sizeof(BITMAPFILEHEADER), bmpfile);
@@ -290,8 +292,10 @@ uint8_t *readbmp_get_image(uint32_t *pChannels, uint32_t *pRowbytes,
   return ourbuffer;
 }
 
-void readbmp_cleanup(void)
+void readbmp_cleanup(void *token)
 {
+  (void)token;
+
   bmpfile = NULL;
   return;
 }
