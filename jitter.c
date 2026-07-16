@@ -5,6 +5,10 @@
 #define jitterx(x,y,s) (ujitter[((x+(y<<2))+ijitter[(x+s)&JITTER_MASK])&JITTER_MASK])
 #define jittery(x,y,s) (vjitter[((y+(x<<2))+ijitter[(y+s)&JITTER_MASK])&JITTER_MASK])
 
+int ijitter[JITTER_TABLE_SIZE];
+float ujitter[JITTER_TABLE_SIZE];
+float vjitter[JITTER_TABLE_SIZE];
+
 void jitter_init(void)
 {
   unsigned int i;
